@@ -8,7 +8,24 @@
 <body>
 <input type="text" id="input-task" placeholder="Enter task name">
 <button id="add-task-button">Add a task</button>
-<ul id="task-list"></ul>
+<ul id="task-list">
+    <li>
+        <input type="checkbox">
+        <span class="task">Task 1</span>
+        <button class="delete-btn"></button>
+    </li>
+    <li>
+        <input type="checkbox">
+        <span class="task">Task 2</span>
+        <button class="delete-btn">
+        </button>
+    </li>
+    <li>
+        <input type="checkbox">
+        <span class="task">Task 3</span>
+        <button class="delete-btn"></button>
+    </li>
+</ul>
 <script>
     document.getElementById('add-task-button').addEventListener('click', function() {
         // Get the task name from the input field
@@ -43,9 +60,27 @@
 
             // Clear the input field
             document.getElementById('input-task').value = '';
+            checkbox.addEventListener('change', function() {
+                // Toggle the "line-through" style based on the checkbox state
+                if (checkbox.checked) {
+                    taskSpan.classList.add('completed');
+                } else {
+                    taskSpan.classList.remove('completed');
+                }
+            });
         }
     });
-
+    var existingCheckboxes = document.querySelectorAll('#task-list input[type="checkbox"]');
+    existingCheckboxes.forEach(function(checkbox) {
+        checkbox.addEventListener('change', function() {
+            var taskSpan = checkbox.nextElementSibling; // Get the next sibling (span)
+            if (checkbox.checked) {
+                taskSpan.classList.add('completed');
+            } else {
+                taskSpan.classList.remove('completed');
+            }
+        });
+    });
     // Add event listener to handle task deletion
     document.getElementById('task-list').addEventListener('click', function() {
         if (event.target.classList.contains('delete-btn')) {
@@ -55,6 +90,5 @@
         document.getElementById()
     });
 </script>
-
 </body>
 </html>
