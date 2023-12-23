@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>To-Do List</title>
+    <link rel="stylesheet" href="properties.css">
+</head>
+<body>
+<input type="text" id="input-task" placeholder="Enter task name">
+<button id="add-task-button">Add a task</button>
+<ul id="task-list"></ul>
+<script>
+    document.getElementById('add-task-button').addEventListener('click', function() {
+        // Get the task name from the input field
+        var taskName = document.getElementById('input-task').value.trim();
+
+        // Check if the task name is not empty
+        if (taskName !== '') {
+            // Create new list item
+            var listItem = document.createElement('li');
+
+            // Create checkbox
+            var checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+
+            // Create span for the task name
+            var taskSpan = document.createElement('span');
+            taskSpan.className = 'task';
+            taskSpan.textContent = taskName;
+
+            // Create delete button
+            var deleteButton = document.createElement('button');
+            deleteButton.className = 'delete-btn';
+            deleteButton.textContent = 'Delete';
+
+            // Append elements to the list item
+            listItem.appendChild(checkbox);
+            listItem.appendChild(taskSpan);
+            listItem.appendChild(deleteButton);
+
+            // Append the list item to the task list
+            document.getElementById('task-list').appendChild(listItem);
+
+            // Clear the input field
+            document.getElementById('input-task').value = '';
+        }
+    });
+
+    // Add event listener to handle task deletion
+    document.getElementById('task-list').addEventListener('click', function() {
+        if (event.target.classList.contains('delete-btn')) {
+            // Remove the parent list item when the delete button is clicked
+            event.target.parentNode.remove();
+        }
+        document.getElementById()
+    });
+</script>
+
+</body>
+</html>
