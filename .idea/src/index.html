@@ -9,85 +9,93 @@
 <input type="text" id="input-task" placeholder="Enter task name">
 <button id="add-task-button">Add a task</button>
 <ul id="task-list">
-    <li>
-        <input type="checkbox">
-        <span class="task">Task 1</span>
-        <button class="delete-btn"></button>
-    </li>
-    <li>
-        <input type="checkbox">
-        <span class="task">Task 2</span>
-        <button class="delete-btn">
-        </button>
-    </li>
-    <li>
-        <input type="checkbox">
-        <span class="task">Task 3</span>
-        <button class="delete-btn"></button>
-    </li>
 </ul>
 <script>
-    document.getElementById('add-task-button').addEventListener('click', function() {
-        // Get the task name from the input field
-        var taskName = document.getElementById('input-task').value.trim();
+    // Fetch the task list from local storage
+    var taskList = JSON.parse(localStorage.getItem("tasks")) || [];
 
-        // Check if the task name is not empty
-        if (taskName !== '') {
-            // Create new list item
+    // Function to update local storage with the current task list
+    function updateLocalStorage() {
+        localStorage.setItem("tasks", JSON.stringify(taskList));
+    }
+
+    // Function to render tasks on the page
+    function renderTasks() {
+        var taskListElement = document.getElementById('task-list');
+        taskListElement.innerHTML = ''; // Clear existing tasks
+
+        taskList.forEach(function(task) {
             var listItem = document.createElement('li');
-
-            // Create checkbox
             var checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
-
-            // Create span for the task name
             var taskSpan = document.createElement('span');
             taskSpan.className = 'task';
-            taskSpan.textContent = taskName;
+            taskSpan.textContent = task.name;
 
-            // Create delete button
+            // Set checkbox state based on the 'completed' property
+            checkbox.checked = task.completed;
+
+            // Apply 'line-through' style if task is completed
+            if (task.completed) {
+                taskSpan.classList.add('completed');
+            }
+
             var deleteButton = document.createElement('button');
             deleteButton.className = 'delete-btn';
             deleteButton.textContent = 'Delete';
 
-            // Append elements to the list item
             listItem.appendChild(checkbox);
             listItem.appendChild(taskSpan);
             listItem.appendChild(deleteButton);
 
-            // Append the list item to the task list
-            document.getElementById('task-list').appendChild(listItem);
+            taskListElement.appendChild(listItem);
 
-            // Clear the input field
-            document.getElementById('input-task').value = '';
+            // Add event listener to handle task completion
             checkbox.addEventListener('change', function() {
-                // Toggle the "line-through" style based on the checkbox state
-                if (checkbox.checked) {
+                task.completed = checkbox.checked;
+                if (task.completed) {
                     taskSpan.classList.add('completed');
                 } else {
                     taskSpan.classList.remove('completed');
                 }
+                updateLocalStorage();
             });
-        }
-    });
-    var existingCheckboxes = document.querySelectorAll('#task-list input[type="checkbox"]');
-    existingCheckboxes.forEach(function(checkbox) {
-        checkbox.addEventListener('change', function() {
-            var taskSpan = checkbox.nextElementSibling; // Get the next sibling (span)
-            if (checkbox.checked) {
-                taskSpan.classList.add('completed');
-            } else {
-                taskSpan.classList.remove('completed');
-            }
+
+            // Add event listener to handle task deletion
+            deleteButton.addEventListener('click', function() {
+                var index = taskList.indexOf(task);
+                if (index !== -1) {
+                    taskList.splice(index, 1);
+                    listItem.remove();
+                    updateLocalStorage();
+                }
+            });
         });
-    });
-    // Add event listener to handle task deletion
-    document.getElementById('task-list').addEventListener('click', function() {
-        if (event.target.classList.contains('delete-btn')) {
-            // Remove the parent list item when the delete button is clicked
-            event.target.parentNode.remove();
+    }
+
+    // Initial render on page load
+    renderTasks();
+
+    document.getElementById('add-task-button').addEventListener('click', function() {
+        var taskName = document.getElementById('input-task').value.trim();
+
+        if (taskName !== '') {
+            // Create a new task object
+            var newTask = {
+                name: taskName,
+                completed: false
+            };
+
+            // Add the new task to the task list
+            taskList.push(newTask);
+
+            // Update local storage and re-render the tasks
+            updateLocalStorage();
+            renderTasks();
+
+            // Clear the input field
+            document.getElementById('input-task').value = '';
         }
-        document.getElementById()
     });
 </script>
 </body>
